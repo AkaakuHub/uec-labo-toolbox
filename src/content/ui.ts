@@ -17,7 +17,6 @@ interface EnhancementContext {
   studentChoices: Map<string, StudentChoiceSummary>;
 }
 
-const CHIP_LIMIT = 4;
 let studentChoiceLookup: Map<string, StudentChoiceSummary> = new Map();
 let hoverHandlersBound = false;
 let tooltipEl: HTMLDivElement | null = null;
@@ -167,16 +166,10 @@ function annotatePreferenceCell(
   const container = document.createElement('div');
   container.dataset.labxChipContainer = '1';
   container.className = 'labx-student-chips';
-  names.slice(0, CHIP_LIMIT).forEach((entry) => {
+  names.forEach((entry) => {
     const token = createStudentToken(entry, 'chip', student?.studentId, studentChoices);
     container.appendChild(token);
   });
-  if (names.length > CHIP_LIMIT) {
-    const rest = document.createElement('span');
-    rest.className = 'labx-chip-more';
-    rest.textContent = `+${names.length - CHIP_LIMIT}`;
-    container.appendChild(rest);
-  }
   cell.appendChild(container);
 }
 

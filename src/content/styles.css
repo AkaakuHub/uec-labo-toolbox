@@ -186,15 +186,6 @@
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
-.labx-chip-more {
-  padding: 0.15rem 0.45rem;
-  border-radius: 0.5rem;
-  background: #e2e8f0;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #475569;
-}
-
 #labx-tooltip {
   position: absolute;
   min-width: 220px;
