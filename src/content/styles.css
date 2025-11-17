@@ -4,6 +4,7 @@
 
 body {
   margin: 0;
+  padding: 16px;
 }
 
 dd {
@@ -22,7 +23,6 @@ dd {
   background: #ffffff;
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 18px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
   overflow: hidden;
   margin: 1.5rem 0;
 }
@@ -255,12 +255,10 @@ dd {
 
 .labx-info-panel {
   width: 100%;
-  background: #0f172a;
-  color: #f8fafc;
+  background: #f8fafc;
   border-radius: 18px;
   margin: 1rem 0 2rem;
   padding: 0;
-  box-shadow: 0 25px 65px rgba(15, 23, 42, 0.35);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -276,7 +274,6 @@ dd {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #cbd5f5;
   margin: 0 0 0.2rem;
 }
 
@@ -293,7 +290,6 @@ dd {
 }
 
 .labx-program-item {
-  background: rgba(15, 23, 42, 0.35);
   padding: 0.9rem;
   border-radius: 1rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -309,7 +305,6 @@ dd {
   flex-wrap: wrap;
   gap: 0.75rem;
   font-size: 0.8rem;
-  color: #e2e8f0;
   margin-bottom: 0.35rem;
 }
 
@@ -323,5 +318,4 @@ dd {
   flex-wrap: wrap;
   gap: 1rem;
   font-size: 0.78rem;
-  color: #cbd5f5;
 }
