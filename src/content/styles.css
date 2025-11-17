@@ -353,3 +353,89 @@
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   letter-spacing: 0.5px;
 }
+
+/* 配属確定した学生の豪華なスタイル */
+.labx-student-confirmed-assignment {
+  position: relative;
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: white !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 9999px !important;
+  animation: confirmedGlow 2s ease-in-out infinite alternate;
+  z-index: 10;
+}
+
+.labx-student-confirmed-assignment::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6, #10b981);
+  border-radius: 9999px;
+  z-index: -1;
+  animation: rainbowBorder 3s linear infinite;
+}
+
+.labx-student-confirmed-assignment::after {
+  content: '✓';
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.5);
+}
+
+.labx-student-confirmed-assignment .labx-student-id {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-weight: 600 !important;
+}
+
+.labx-student-confirmed-assignment .labx-student-name {
+  color: white !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.labx-student-confirmed-assignment .labx-student-program {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500 !important;
+}
+
+/* 配属確定学生のホバー効果 */
+.labx-student-confirmed-assignment:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6), 0 0 30px rgba(16, 185, 129, 0.3) !important;
+  z-index: 20;
+}
+
+/* アニメーション定義 */
+@keyframes confirmedGlow {
+  0% {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+  100% {
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.4);
+  }
+}
+
+@keyframes rainbowBorder {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

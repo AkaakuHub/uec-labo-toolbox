@@ -317,8 +317,13 @@ function createStudentToken(
   }
   token.className = variant === 'chip' ? 'labx-student-chip' : 'labx-student-pill';
 
+  // 配属確定した学生のトークンを豪華に表示
+  if (studentId && summary?.confirmed === preference) {
+    token.classList.add('labx-student-confirmed-assignment');
+  }
+
   // 第1希望で配属確定した学生の第2・第3希望をグレーアウト
-  if (studentId && studentChoices.get(studentId)?.confirmed === 1 && preference > 1) {
+  if (studentId && summary?.confirmed === 1 && preference > 1) {
     token.classList.add('labx-student-confirmed-first-choice');
   }
 
