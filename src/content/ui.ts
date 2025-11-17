@@ -1,5 +1,7 @@
 import type {
+  HistoryState,
   LabApplicantNames,
+  LabDiff,
   LabInfo,
   ProgramAggregate,
   ProgramSummary,
@@ -15,6 +17,7 @@ interface EnhancementContext {
   programSummary?: ProgramSummary | null;
   programStats: ProgramAggregate[];
   studentChoices: Map<string, StudentChoiceSummary>;
+  history: HistoryState;
 }
 
 let studentChoiceLookup: Map<string, StudentChoiceSummary> = new Map();
@@ -24,8 +27,15 @@ let tooltipEl: HTMLDivElement | null = null;
 export function applyEnhancements(ctx: EnhancementContext) {
   studentChoiceLookup = ctx.studentChoices;
   modernizeTables();
-  paintProgramSummary(ctx.programSummary, ctx.programStats);
-  decorateSummaryRows(ctx.rowMap, ctx.labs, ctx.labDetails, ctx.student, ctx.studentChoices);
+  paintProgramSummary(ctx.programSummary, ctx.programStats, ctx.history);
+  decorateSummaryRows(
+    ctx.rowMap,
+    ctx.labs,
+    ctx.labDetails,
+    ctx.student,
+    ctx.studentChoices,
+    ctx.history.diffMap,
+  );
   tagDetailTables(ctx.studentChoices, ctx.student);
   setupStudentHoverSync();
 }
@@ -37,14 +47,20 @@ function modernizeTables() {
   });
 }
 
-function paintProgramSummary(summary?: ProgramSummary | null, stats: ProgramAggregate[] = []) {
+function paintProgramSummary(
+  summary: ProgramSummary | null | undefined,
+  stats: ProgramAggregate[] = [],
+  history?: HistoryState,
+) {
   const baseTable = document.querySelector('dl table');
   if (!baseTable || baseTable.closest('.labx-info-panel')) return;
   const container = document.createElement('div');
   container.className = 'labx-info-panel';
 
-  const totalCapacity = summary?.capacity ?? stats.reduce((acc, item) => acc + item.capacity, 0);
-  const totalApplicants = summary?.applicants ?? stats.reduce((acc, item) => acc + item.applicants, 0);
+  const aggregatedCapacity = stats.reduce((acc, item) => acc + item.capacity, 0);
+  const aggregatedApplicants = stats.reduce((acc, item) => acc + item.applicants, 0);
+  const totalCapacity = aggregatedCapacity || summary?.capacity || 0;
+  const totalApplicants = aggregatedApplicants || summary?.applicants || 0;
   const remaining = Math.max(totalCapacity - totalApplicants, 0);
   const registered = summary?.registered ?? null;
 
@@ -76,7 +92,7 @@ function paintProgramSummary(summary?: ProgramSummary | null, stats: ProgramAggr
       <div class="labx-program-title">${program.program}</div>
       <div class="labx-program-metrics">
         <span>第1希望 ${program.applicants}</span>
-        <span>定員 ${program.capacity}</span>
+        <span>枠 ${program.capacity}</span>
         <span class="labx-program-remaining">残り ${Math.max(program.remaining, 0)}</span>
       </div>
       <div class="labx-progress-shell">
@@ -87,6 +103,10 @@ function paintProgramSummary(summary?: ProgramSummary | null, stats: ProgramAggr
   });
 
   container.append(overview, list);
+
+  if (history) {
+    container.appendChild(renderHistoryMeta(history));
+  }
   baseTable.insertAdjacentElement('afterend', container);
 }
 
@@ -96,18 +116,20 @@ function decorateSummaryRows(
   detailMap: Map<string, LabApplicantNames>,
   student: StudentInfo | null,
   studentChoices: Map<string, StudentChoiceSummary>,
+  diffMap: Map<string, LabDiff>,
 ) {
   const labMap = new Map(labs.map((lab) => [lab.name, lab]));
   rowMap.forEach((rows, labName) => {
     const info = labMap.get(labName);
     if (!info) return;
     const applicants = detailMap.get(labName);
+    const diff = diffMap.get(labName);
     rows.forEach((row) => {
       row.classList.add('labx-row', `labx-status-${info.status}`);
       if (student?.preferences?.some((pref) => pref.labName === labName)) {
         row.classList.add('labx-row-self');
       }
-      annotateLabCell(row, info);
+      annotateLabCell(row, info, diff);
       annotateCapacityCell(row, info);
       annotatePreferenceCell(row.cells.item(2), applicants?.first ?? [], student, studentChoices);
       annotatePreferenceCell(row.cells.item(3), applicants?.second ?? [], student, studentChoices);
@@ -116,7 +138,7 @@ function decorateSummaryRows(
   });
 }
 
-function annotateLabCell(row: HTMLTableRowElement, info: LabInfo) {
+function annotateLabCell(row: HTMLTableRowElement, info: LabInfo, diff?: LabDiff) {
   const cell = row.cells.item(0);
   if (!cell || cell.querySelector('[data-labx-status]')) return;
   const badge = document.createElement('span');
@@ -131,6 +153,19 @@ function annotateLabCell(row: HTMLTableRowElement, info: LabInfo) {
   wrap.className = 'labx-lab-meta';
   wrap.append(badge, ratio);
   cell.appendChild(wrap);
+
+  if (diff && (diff.firstChoicePrimary !== 0 || diff.firstChoiceTotal !== 0)) {
+    const diffWrap = document.createElement('div');
+    diffWrap.dataset.labxDiff = '1';
+    diffWrap.className = 'labx-diff-meta';
+    const primaryChip = createDiffChip('3年', diff.firstChoicePrimary);
+    const totalChip = createDiffChip('全体', diff.firstChoiceTotal);
+    if (primaryChip) diffWrap.appendChild(primaryChip);
+    if (totalChip) diffWrap.appendChild(totalChip);
+    if (diffWrap.childNodes.length) {
+      cell.appendChild(diffWrap);
+    }
+  }
 }
 
 function annotateCapacityCell(row: HTMLTableRowElement, info: LabInfo) {
@@ -266,6 +301,40 @@ function ensureTooltip(): HTMLDivElement {
 
 function formatChoiceLine(label: string, labs: string[]): string {
   return `${label}: ${labs.length ? labs.join(' / ') : '未登録'}`;
+}
+
+function renderHistoryMeta(history: HistoryState): HTMLElement {
+  const meta = document.createElement('div');
+  meta.className = 'labx-history-meta';
+  const timestampText = history.previousTimestamp
+    ? `前回 ${formatTimestamp(history.previousTimestamp)}`
+    : '初回アクセス';
+  const timestampSpan = document.createElement('span');
+  timestampSpan.textContent = timestampText;
+  const changeSpan = document.createElement('span');
+  changeSpan.textContent = `変動研究室 ${history.changedLabs} 件`;
+  meta.append(timestampSpan, changeSpan);
+  return meta;
+}
+
+function formatTimestamp(value: number): string {
+  const date = new Date(value);
+  return date.toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function createDiffChip(label: string, value: number): HTMLSpanElement | null {
+  if (value === 0) return null;
+  const chip = document.createElement('span');
+  chip.className = 'labx-diff-chip';
+  chip.classList.add(value > 0 ? 'is-up' : 'is-down');
+  chip.textContent = `${label} ${value > 0 ? `+${value}` : value}`;
+  return chip;
 }
 
 function extractEntries(cell: HTMLTableCellElement): string[] {

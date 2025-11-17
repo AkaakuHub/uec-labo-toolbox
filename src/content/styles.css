@@ -110,6 +110,31 @@ dd {
   gap: 0.35rem;
 }
 
+.labx-diff-meta {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.labx-diff-chip {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.labx-diff-chip.is-up {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.labx-diff-chip.is-down {
+  color: #b91c1c;
+  background: rgba(248, 113, 113, 0.2);
+}
+
 .labx-capacity-block {
   margin-top: 0.5rem;
 }
@@ -291,4 +316,12 @@ dd {
 .labx-program-remaining {
   font-weight: 600;
   color: #34d399;
+}
+
+.labx-history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: #cbd5f5;
 }

@@ -12,6 +12,7 @@ import {
 } from './parser';
 import { applyEnhancements } from './ui';
 import type { StudentInfo } from '../types/types';
+import { computeDiff, createSnapshot, loadSnapshot, saveSnapshot } from '../utils/storage';
 
 export function initLabCompass(): void {
   if (document.readyState === 'loading') {
@@ -37,6 +38,12 @@ function run() {
   const programStats = aggregatePrograms(labs);
   const studentChoices = parseStudentChoiceMap(document);
 
+  const snapshotKey = student?.program ?? 'GLOBAL';
+  const previousSnapshot = loadSnapshot(snapshotKey);
+  const currentSnapshot = createSnapshot(labs);
+  const history = computeDiff(previousSnapshot, currentSnapshot);
+  saveSnapshot(snapshotKey, currentSnapshot);
+
   applyEnhancements({
     labs,
     labDetails: detailMap,
@@ -45,6 +52,7 @@ function run() {
     programSummary,
     programStats,
     studentChoices,
+    history,
   });
   console.info('[Lab Compass] 拡張UIを適用しました。');
 }

@@ -67,3 +67,25 @@ export interface StudentChoiceSummary {
   second: string[];
   third: string[];
 }
+
+export interface LabSnapshotEntry {
+  name: string;
+  firstChoicePrimary: number;
+  firstChoiceTotal: number;
+}
+
+export interface LabSnapshot {
+  timestamp: number;
+  labs: LabSnapshotEntry[];
+}
+
+export interface LabDiff {
+  firstChoicePrimary: number;
+  firstChoiceTotal: number;
+}
+
+export interface HistoryState {
+  diffMap: Map<string, LabDiff>;
+  previousTimestamp: number | null;
+  changedLabs: number;
+}
