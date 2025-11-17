@@ -143,10 +143,10 @@ function navigateToLab(labName: string): void {
 function highlightLabRow(row: HTMLTableRowElement): void {
   row.classList.add('labx-row-highlight');
 
-  // 3秒後にハイライトを自動クリア
+  // 0.5秒×6回 = 3秒後にハイライトを自動クリア
   currentHighlightTimeout = window.setTimeout(() => {
     clearHighlight();
-  }, 3000);
+  }, 1000);
 }
 
 /**
