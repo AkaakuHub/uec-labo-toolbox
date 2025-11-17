@@ -1,0 +1,299 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #0f172a;
+}
+
+.labx-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.labx-table th,
+.labx-table td {
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+
+.labx-table th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.labx-table tr:last-child th,
+.labx-table tr:last-child td {
+  border-bottom: none;
+}
+
+.labx-row {
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.labx-row:hover {
+  transform: translateX(4px);
+}
+
+.labx-row-self {
+  position: relative;
+}
+
+.labx-row-self::after {
+  content: 'My希望';
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.15);
+  color: #1d4ed8;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+}
+
+.labx-status-available {
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.labx-status-almost-full {
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.labx-status-over {
+  background: rgba(249, 115, 22, 0.08);
+}
+
+.labx-status-critical {
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.labx-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #0f172a0d;
+}
+
+.labx-ratio-chip {
+  font-size: 0.75rem;
+  color: #475569;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.5rem;
+  background: #e2e8f0;
+}
+
+.labx-lab-meta {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.labx-capacity-block {
+  margin-top: 0.5rem;
+}
+
+.labx-progress-shell {
+  width: 100%;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.labx-progress-segment {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.labx-capacity-caption {
+  font-size: 0.75rem;
+  color: #475569;
+  margin-top: 0.25rem;
+}
+
+.labx-capacity-subtext {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin: 0.15rem 0 0;
+}
+
+.labx-student-chips {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.labx-student-chip,
+.labx-student-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+  background: #f1f5f9;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #0f172a;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border 0.2s ease;
+}
+
+.labx-student-pill {
+  margin: 0.1rem 0;
+}
+
+.labx-student-id {
+  font-variant-numeric: tabular-nums;
+  color: #1d4ed8;
+}
+
+.labx-student-name {
+  color: #0f172a;
+}
+
+.labx-student-program {
+  font-size: 0.65rem;
+  color: #64748b;
+}
+
+.labx-student-self {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #1d4ed8;
+}
+
+.labx-student-active {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.labx-chip-more {
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.5rem;
+  background: #e2e8f0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+#labx-tooltip {
+  position: absolute;
+  min-width: 220px;
+  max-width: 320px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.9rem;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.45);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 99999;
+}
+
+#labx-tooltip.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.labx-tooltip-name {
+  font-weight: 600;
+}
+
+.labx-tooltip-program {
+  font-size: 0.7rem;
+  color: #cbd5f5;
+  margin-bottom: 0.35rem;
+}
+
+.labx-tooltip-line {
+  font-size: 0.75rem;
+  color: #e2e8f0;
+}
+
+.labx-info-panel {
+  width: 100%;
+  background: #0f172a;
+  color: #f8fafc;
+  border-radius: 18px;
+  margin: 1rem 0 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 25px 65px rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.labx-info-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.labx-info-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #cbd5f5;
+  margin: 0 0 0.2rem;
+}
+
+.labx-info-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.labx-program-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.labx-program-item {
+  background: rgba(15, 23, 42, 0.35);
+  padding: 0.9rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.labx-program-title {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.labx-program-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  margin-bottom: 0.35rem;
+}
+
+.labx-program-remaining {
+  font-weight: 600;
+  color: #34d399;
+}

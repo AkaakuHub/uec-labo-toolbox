@@ -1,0 +1,27 @@
+:root {
+  font-family: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+  color: #0f172a;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background: #f9fafb;
+}
+.popup-shell {
+  min-width: 280px;
+  max-width: 360px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.85rem;
+  color: #475569;
+}
