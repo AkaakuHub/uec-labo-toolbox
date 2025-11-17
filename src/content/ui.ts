@@ -320,10 +320,11 @@ function createStudentToken(
   // 配属確定した学生のトークンを豪華に表示
   if (studentId && summary?.confirmed === preference) {
     token.classList.add('labx-student-confirmed-assignment');
+    token.dataset.preference = preference.toString(); // 希望順位をデータ属性に設定
   }
 
-  // 第1希望で配属確定した学生の第2・第3希望をグレーアウト
-  if (studentId && summary?.confirmed === 1 && preference > 1) {
+  // 配属確定した学生の他の希望をグレーアウト
+  if (studentId && summary?.confirmed && summary.confirmed !== preference) {
     token.classList.add('labx-student-confirmed-first-choice');
   }
 

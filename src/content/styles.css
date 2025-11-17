@@ -367,6 +367,18 @@
   z-index: 10;
 }
 
+/* 第2希望で配属確定した学生の豪華なスタイル */
+.labx-student-confirmed-assignment[data-preference="2"] {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4), 0 0 20px rgba(59, 130, 246, 0.2) !important;
+}
+
+/* 第3希望で配属確定した学生の豪華なスタイル */
+.labx-student-confirmed-assignment[data-preference="3"] {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4), 0 0 20px rgba(139, 92, 246, 0.2) !important;
+}
+
 .labx-student-confirmed-assignment::before {
   content: '';
   position: absolute;
@@ -396,6 +408,18 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 4px rgba(239, 68, 68, 0.5);
+}
+
+/* 第2希望で配属確定した場合のチェックマーク */
+.labx-student-confirmed-assignment[data-preference="2"]::after {
+  background: #3b82f6;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.5);
+}
+
+/* 第3希望で配属確定した場合のチェックマーク */
+.labx-student-confirmed-assignment[data-preference="3"]::after {
+  background: #8b5cf6;
+  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.5);
 }
 
 .labx-student-confirmed-assignment .labx-student-id {
