@@ -288,3 +288,43 @@
   font-weight: 600;
   color: #34d399;
 }
+
+/* 第1希望確定学生の第2・第3希望をグレーアウト */
+.labx-student-confirmed-first-choice {
+  opacity: 0.4;
+  background: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  text-decoration: line-through;
+  /* pointer-events: none; を削除してホバー効果を維持 */
+  border-color: transparent !important;
+}
+
+.labx-student-confirmed-first-choice .labx-student-id {
+  color: #94a3b8 !important;
+}
+
+.labx-student-confirmed-first-choice .labx-student-name {
+  color: #94a3b8 !important;
+}
+
+.labx-student-confirmed-first-choice .labx-student-program {
+  color: #a8b3c7 !important;
+}
+
+/* 確定学生のホバー時のスタイル調整 */
+.labx-student-confirmed-first-choice:hover {
+  opacity: 0.6; /* ホバー時に少し透明度を戻す */
+  transform: none; /* 既存のホバー効果を上書きして移動をキャンセル */
+}
+
+.labx-student-confirmed-first-choice:hover .labx-student-id {
+  color: #64748b !important; /* ホバー時の色調整 */
+}
+
+.labx-student-confirmed-first-choice:hover .labx-student-name {
+  color: #64748b !important; /* ホバー時の色調整 */
+}
+
+.labx-student-confirmed-first-choice:hover .labx-student-program {
+  color: #94a3b8 !important; /* ホバー時の色調整 */
+}

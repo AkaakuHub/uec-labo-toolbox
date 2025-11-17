@@ -66,4 +66,5 @@ export interface StudentChoiceSummary {
   first: string[];
   second: string[];
   third: string[];
+  confirmed?: 1 | 2 | 3 | null;
 }

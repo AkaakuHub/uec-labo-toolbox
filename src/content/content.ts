@@ -9,6 +9,7 @@ import {
   parseStudentChoiceMap,
   parseProgramSummary,
   parseStudentInfo,
+  identifyConfirmedFirstChoiceAssignments,
 } from './parser';
 import { applyEnhancements } from './ui';
 import type { StudentInfo } from '../types/types';
@@ -36,6 +37,9 @@ function run() {
   const detailMap = parseLabApplicantNames(document);
   const programStats = aggregatePrograms(labs);
   const studentChoices = parseStudentChoiceMap(document);
+
+  // 第1希望で配属確定した学生を特定
+  identifyConfirmedFirstChoiceAssignments(studentChoices, labs);
 
   applyEnhancements({
     labs,

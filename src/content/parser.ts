@@ -364,3 +364,35 @@ export function parseStudentEntry(entry: string): {
     program: programMatch ? programMatch[1].trim() : undefined,
   };
 }
+
+/**
+ * 第1希望で配属確定した学生を特定する
+ * @param studentChoices 学生の希望リスト
+ * @param labs 研究室情報
+ */
+export function identifyConfirmedFirstChoiceAssignments(
+  studentChoices: Map<string, StudentChoiceSummary>,
+  labs: LabInfo[]
+): void {
+  // 各研究室について、第1希望の定員内にいる学生を確定者として特定
+  labs.forEach(lab => {
+    // この研究室を第1希望としている学生を抽出
+    const firstChoiceApplicants = Array.from(studentChoices.entries())
+      .filter(([_, choices]) => choices.first.includes(lab.name))
+      .map(([studentId, _]) => studentId);
+
+    // 応募者が定員内に収まる場合のみ全員を確定
+    if (firstChoiceApplicants.length > 0 &&
+        firstChoiceApplicants.length <= lab.primaryCapacity &&
+        lab.primaryCapacity > 0) {
+
+      firstChoiceApplicants.forEach(studentId => {
+        const summary = studentChoices.get(studentId);
+        if (summary && !summary.confirmed) {
+          summary.confirmed = 1; // 第1希望で確定
+        }
+      });
+    }
+    // 応募者数 > 定員の場合は何もしない（全員未確定のまま）
+  });
+}
