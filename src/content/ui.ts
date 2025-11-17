@@ -252,15 +252,16 @@ function toggleStudentHighlight(studentId: string, active: boolean) {
 
 function showTooltip(summary: StudentChoiceSummary, event: PointerEvent) {
   const tooltip = ensureTooltip();
-  const first = formatChoiceLine('第1希望', summary.first);
-  const second = formatChoiceLine('第2希望', summary.second);
-  const third = formatChoiceLine('第3希望', summary.third);
+  const first = formatChoiceLine('第1希望', summary.first, summary.confirmed === 1);
+  const second = formatChoiceLine('第2希望', summary.second, summary.confirmed === 2);
+  const third = formatChoiceLine('第3希望', summary.third, summary.confirmed === 3);
   tooltip.innerHTML = `
     <div class="labx-tooltip-name">${summary.name}</div>
     ${summary.program ? `<div class="labx-tooltip-program">${summary.program}</div>` : ''}
     <div class="labx-tooltip-line">${first}</div>
     <div class="labx-tooltip-line">${second}</div>
     <div class="labx-tooltip-line">${third}</div>
+    ${summary.confirmed ? `<div class="labx-tooltip-confirmed">✓ 配属確定 (${summary.confirmed}希望)</div>` : ''}
   `;
   tooltip.style.left = `${event.clientX + 18 + window.scrollX}px`;
   tooltip.style.top = `${event.clientY + 18 + window.scrollY}px`;
@@ -282,8 +283,15 @@ function ensureTooltip(): HTMLDivElement {
   return tooltipEl;
 }
 
-function formatChoiceLine(label: string, labs: string[]): string {
-  return `${label}: ${labs.length ? labs.join(' / ') : '未登録'}`;
+function formatChoiceLine(label: string, labs: string[], isConfirmed: boolean = false): string {
+  if (!labs.length) return `${label}: 未登録`;
+
+  if (isConfirmed && labs.length === 1) {
+    // 配属確定した研究室をハイライト
+    return `${label}: <span class="labx-tooltip-confirmed-lab">${labs[0]} ✓</span>`;
+  }
+
+  return `${label}: ${labs.join(' / ')}`;
 }
 
 function extractEntries(cell: HTMLTableCellElement): string[] {
