@@ -139,8 +139,10 @@ export function parseLabSummaries(doc: Document): LabInfo[] {
       const second = parseBreakdown(cells[3]?.textContent);
       const third = parseBreakdown(cells[4]?.textContent);
       const totals = sumBreakdowns([first, second, third]);
-      const firstChoiceCount = first.total;
-      const competitionRate = capacity.total > 0 ? Number((firstChoiceCount / capacity.total).toFixed(2)) : 0;
+      const firstChoiceTotal = first.total;
+      const primaryCapacity = capacity.thirdYear > 0 ? capacity.thirdYear : capacity.total;
+      const firstChoicePrimary = first.thirdYear > 0 ? first.thirdYear : firstChoiceTotal;
+      const competitionRate = primaryCapacity > 0 ? Number((firstChoicePrimary / primaryCapacity).toFixed(2)) : 0;
       labs.push({
         name: rawName,
         email: cells[5]?.textContent?.trim() ?? undefined,
@@ -148,9 +150,11 @@ export function parseLabSummaries(doc: Document): LabInfo[] {
         capacity,
         applicants: { first, second, third },
         totals,
-        firstChoiceCount,
+        firstChoiceTotal,
+        firstChoicePrimary,
+        primaryCapacity,
         competitionRate,
-        status: classifyLabStatus(capacity.total, firstChoiceCount),
+        status: classifyLabStatus(primaryCapacity, firstChoicePrimary),
       });
     });
   });
@@ -296,8 +300,8 @@ export function aggregatePrograms(labs: LabInfo[]): ProgramAggregate[] {
   labs.forEach((lab) => {
     const program = lab.programName ?? 'プログラム不明';
     const value = map.get(program) ?? { program, capacity: 0, applicants: 0, remaining: 0 };
-    value.capacity += lab.capacity.total;
-    value.applicants += lab.firstChoiceCount;
+    value.capacity += lab.primaryCapacity;
+    value.applicants += lab.firstChoicePrimary;
     map.set(program, value);
   });
   map.forEach((entry) => {

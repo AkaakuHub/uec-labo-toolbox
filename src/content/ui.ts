@@ -57,7 +57,7 @@ function paintProgramSummary(summary?: ProgramSummary | null, stats: ProgramAggr
       <p class="labx-info-value">${remaining}</p>
     </div>
     <div>
-      <p class="labx-info-label">希望者合計</p>
+      <p class="labx-info-label">第1希望合計</p>
       <p class="labx-info-value">${totalApplicants}</p>
     </div>
     ${
@@ -142,17 +142,17 @@ function annotateCapacityCell(row: HTMLTableRowElement, info: LabInfo) {
   wrapper.className = 'labx-capacity-block';
   const bar = document.createElement('div');
   bar.className = 'labx-progress-shell';
-  const ratio = info.capacity.total > 0 ? (info.firstChoiceCount / info.capacity.total) * 100 : 0;
+  const ratio = info.primaryCapacity > 0 ? (info.firstChoicePrimary / info.primaryCapacity) * 100 : 0;
   const fill = document.createElement('div');
   fill.className = 'labx-progress-segment';
   fill.style.width = `${Math.min(ratio, 120)}%`;
   bar.appendChild(fill);
   const caption = document.createElement('p');
   caption.className = 'labx-capacity-caption';
-  caption.textContent = `第1希望 ${info.firstChoiceCount} / 定員 ${info.capacity.total}`;
+  caption.textContent = `第1希望(3年) ${info.firstChoicePrimary} / 枠 ${info.primaryCapacity}`;
   const totalLine = document.createElement('p');
   totalLine.className = 'labx-capacity-subtext';
-  totalLine.textContent = `全希望 ${info.totals.total} 名`;
+  totalLine.textContent = `全希望 ${info.firstChoiceTotal} / 定員 ${info.capacity.total}`;
   wrapper.append(bar, caption, totalLine);
   cell.appendChild(wrapper);
 }

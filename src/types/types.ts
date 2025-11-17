@@ -20,7 +20,9 @@ export interface LabInfo {
   capacity: CapacityBreakdown;
   applicants: PreferenceBucket;
   totals: CapacityBreakdown;
-  firstChoiceCount: number;
+  firstChoiceTotal: number;
+  firstChoicePrimary: number;
+  primaryCapacity: number;
   competitionRate: number;
   status: LabStatus;
 }
