@@ -12,6 +12,7 @@ import {
   identifyConfirmedFirstChoiceAssignments,
 } from './parser';
 import { applyEnhancements } from './ui';
+import { setupNavigationListeners } from './navigation';
 import type { StudentInfo } from '../types/types';
 
 export function initLabCompass(): void {
@@ -50,5 +51,9 @@ function run() {
     programStats,
     studentChoices,
   });
+
+  // ナビゲーション機能を初期化
+  setupNavigationListeners(rowMap, studentChoices);
+
   console.info('[Lab Compass] 拡張UIを適用しました。');
 }

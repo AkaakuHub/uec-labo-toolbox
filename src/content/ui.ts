@@ -321,11 +321,13 @@ function createStudentToken(
   if (studentId && summary?.confirmed === preference) {
     token.classList.add('labx-student-confirmed-assignment');
     token.dataset.preference = preference.toString(); // 希望順位をデータ属性に設定
+    token.style.cursor = 'pointer'; // クリック可能であることを示す
   }
 
   // 配属確定した学生の他の希望をグレーアウト
   if (studentId && summary?.confirmed && summary.confirmed !== preference) {
     token.classList.add('labx-student-confirmed-first-choice');
+    token.style.cursor = 'pointer'; // グレーアウトした学生もクリック可能にする
   }
 
   if (studentId) {

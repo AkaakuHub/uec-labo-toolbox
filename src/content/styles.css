@@ -463,3 +463,54 @@
     transform: rotate(360deg);
   }
 }
+
+/* 研究室行ハイライト */
+.labx-row-highlight {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.3), rgba(147, 51, 234, 0.3)) !important;
+  border: 2px solid #3b82f6 !important;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4) !important;
+  animation: rowHighlightPulse 1.5s ease-in-out infinite;
+  position: relative;
+  z-index: 50;
+}
+
+@keyframes rowHighlightPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+  }
+}
+
+/* ハイライト行のセルスタイル調整 */
+.labx-row-highlight td {
+  position: relative;
+}
+
+/* ハイライト行の追加アニメーション */
+.labx-row-highlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px;
+  right: -5px;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.2), transparent);
+  animation: highlightSweep 2s ease-in-out infinite;
+  z-index: -1;
+}
+
+@keyframes highlightSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
