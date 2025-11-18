@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  margin: 0;
+  padding: 16px;
+}
+
+dd {
+  margin-inline-start: 0;
+}
+
 :root {
   font-family: 'Inter', 'Noto Sans JP', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #0f172a;
@@ -14,7 +23,6 @@
   background: #ffffff;
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 18px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
   overflow: hidden;
   margin: 1.5rem 0;
 }
@@ -39,11 +47,7 @@
 }
 
 .labx-row {
-  transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.labx-row:hover {
-  transform: translateX(4px);
+  transition: background 0.25s ease;
 }
 
 .labx-row-self {
@@ -104,6 +108,31 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
+}
+
+.labx-diff-meta {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.labx-diff-chip {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.labx-diff-chip.is-up {
+  color: #047857;
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.labx-diff-chip.is-down {
+  color: #b91c1c;
+  background: rgba(248, 113, 113, 0.2);
 }
 
 .labx-capacity-block {
@@ -226,12 +255,10 @@
 
 .labx-info-panel {
   width: 100%;
-  background: #0f172a;
-  color: #f8fafc;
+  background: #f8fafc;
   border-radius: 18px;
   margin: 1rem 0 2rem;
-  padding: 1.5rem;
-  box-shadow: 0 25px 65px rgba(15, 23, 42, 0.35);
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -247,7 +274,6 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #cbd5f5;
   margin: 0 0 0.2rem;
 }
 
@@ -264,7 +290,6 @@
 }
 
 .labx-program-item {
-  background: rgba(15, 23, 42, 0.35);
   padding: 0.9rem;
   border-radius: 1rem;
   border: 1px solid rgba(148, 163, 184, 0.2);
@@ -280,7 +305,6 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   font-size: 0.8rem;
-  color: #e2e8f0;
   margin-bottom: 0.35rem;
 }
 
@@ -472,4 +496,10 @@
     background: linear-gradient(90deg, rgba(59, 130, 246, 0.4), rgba(147, 51, 234, 0.3));
     border-color: rgba(59, 130, 246, 0.8);
   }
+}
+.labx-history-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.78rem;
 }
