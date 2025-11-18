@@ -9,8 +9,10 @@ import {
   parseStudentChoiceMap,
   parseProgramSummary,
   parseStudentInfo,
+  identifyConfirmedFirstChoiceAssignments,
 } from './parser';
 import { applyEnhancements } from './ui';
+import { setupNavigationListeners } from './navigation';
 import type { StudentInfo } from '../types/types';
 import { computeDiff, createSnapshot, loadSnapshot, saveSnapshot } from '../utils/storage';
 
@@ -38,6 +40,8 @@ function run() {
   const programStats = aggregatePrograms(labs);
   const studentChoices = parseStudentChoiceMap(document);
 
+  // 第1希望で配属確定した学生を特定
+  identifyConfirmedFirstChoiceAssignments(studentChoices, labs);
   const snapshotKey = student?.program ?? 'GLOBAL';
   const previousSnapshot = loadSnapshot(snapshotKey);
   const currentSnapshot = createSnapshot(labs);
@@ -54,5 +58,9 @@ function run() {
     studentChoices,
     history,
   });
+
+  // ナビゲーション機能を初期化
+  setupNavigationListeners(rowMap, studentChoices);
+
   console.info('[Lab Compass] 拡張UIを適用しました。');
 }

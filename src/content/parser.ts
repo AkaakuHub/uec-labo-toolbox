@@ -364,3 +364,77 @@ export function parseStudentEntry(entry: string): {
     program: programMatch ? programMatch[1].trim() : undefined,
   };
 }
+
+/**
+ * 第1希望で配属確定した学生を特定する
+ * @param studentChoices 学生の希望リスト
+ * @param labs 研究室情報
+ */
+export function identifyConfirmedFirstChoiceAssignments(
+  studentChoices: Map<string, StudentChoiceSummary>,
+  labs: LabInfo[]
+): void {
+  // 各研究室について、第1希望の定員内にいる学生を確定者として特定
+  const reaminCapacityMap = new Map<string, number>();
+
+  labs.forEach(lab => {
+    let reaminCapacity = lab.primaryCapacity;
+    // この研究室を第1希望としている学生を抽出
+    const firstChoiceApplicants = Array.from(studentChoices.entries())
+      .filter(([_, choices]) => choices.first.includes(lab.name))
+      .map(([studentId, _]) => studentId);
+
+    // 応募者が定員内に収まる場合のみ全員を確定
+    // 第1志望
+    reaminCapacity -= firstChoiceApplicants.length;
+    // 応募者数 > 定員の場合は何もしない（全員未確定のまま）
+    if (reaminCapacity >= 0) {
+      firstChoiceApplicants.forEach(studentId => {
+        const summary = studentChoices.get(studentId);
+        if (summary && !summary.confirmed) {
+          summary.confirmed = 1; // 第1希望で確定
+        }
+      });
+    }
+    reaminCapacityMap.set(lab.name, reaminCapacity);
+  });
+
+  // 第2希望・第3希望についても同様に処理
+  labs.forEach(lab => {
+    let reaminCapacity = reaminCapacityMap.get(lab.name)!;
+    if (reaminCapacity <= 0) return;
+
+    // 第2志望
+    const secondChoiceApplicants = Array.from(studentChoices.entries())
+      .filter(([_, choices]) => choices.second.includes(lab.name) && !choices.confirmed)
+      .map(([studentId, _]) => studentId);
+  
+    reaminCapacity -= secondChoiceApplicants.length;
+    if (reaminCapacity < 0) return;
+    secondChoiceApplicants.forEach(studentId => {
+      const summary = studentChoices.get(studentId);
+      if (summary && !summary.confirmed) {
+        summary.confirmed = 2; // 第2希望で確定
+      }
+    });
+  });
+
+  labs.forEach(lab => {
+    let reaminCapacity = reaminCapacityMap.get(lab.name)!;
+    if (reaminCapacity <= 0) return;
+
+    // 第3志望
+    const thirdChoiceApplicants = Array.from(studentChoices.entries())
+      .filter(([_, choices]) => choices.third.includes(lab.name) && !choices.confirmed)
+      .map(([studentId, _]) => studentId);
+  
+    reaminCapacity -= thirdChoiceApplicants.length;
+    if (reaminCapacity < 0) return;
+    thirdChoiceApplicants.forEach(studentId => {
+      const summary = studentChoices.get(studentId);
+      if (summary && !summary.confirmed) {
+        summary.confirmed = 3; // 第3希望で確定
+      }
+    });
+  });
+}

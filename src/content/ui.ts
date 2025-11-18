@@ -131,9 +131,9 @@ function decorateSummaryRows(
       }
       annotateLabCell(row, info, diff);
       annotateCapacityCell(row, info);
-      annotatePreferenceCell(row.cells.item(2), applicants?.first ?? [], student, studentChoices);
-      annotatePreferenceCell(row.cells.item(3), applicants?.second ?? [], student, studentChoices);
-      annotatePreferenceCell(row.cells.item(4), applicants?.third ?? [], student, studentChoices);
+      annotatePreferenceCell(row.cells.item(2), applicants?.first ?? [], student, studentChoices, 1);
+      annotatePreferenceCell(row.cells.item(3), applicants?.second ?? [], student, studentChoices, 2);
+      annotatePreferenceCell(row.cells.item(4), applicants?.third ?? [], student, studentChoices, 3);
     });
   });
 }
@@ -196,32 +196,50 @@ function annotatePreferenceCell(
   names: string[],
   student: StudentInfo | null,
   studentChoices: Map<string, StudentChoiceSummary>,
+  preference: 1 | 2 | 3
 ) {
   if (!cell || cell.querySelector('[data-labx-chip-container]') || !names.length) return;
   const container = document.createElement('div');
   container.dataset.labxChipContainer = '1';
   container.className = 'labx-student-chips';
   names.forEach((entry) => {
-    const token = createStudentToken(entry, 'chip', student?.studentId, studentChoices);
+    const token = createStudentToken(entry, 'chip', student?.studentId, studentChoices, preference);
     container.appendChild(token);
   });
   cell.appendChild(container);
 }
 
-function tagDetailTables(studentChoices: Map<string, StudentChoiceSummary>, student: StudentInfo | null) {
+function tagDetailTables(
+  studentChoices: Map<string, StudentChoiceSummary>,
+  student: StudentInfo | null
+) {
   const tables = Array.from(document.querySelectorAll('table')).filter((table) => isDetailTable(table));
   tables.forEach((table) => {
+    const header = table.querySelector('tr');
+    const headerCells = Array.from(header?.querySelectorAll('th') || []);
+
+    // 列の希望順位を特定
+    const columnPreferences: (1 | 2 | 3)[] = [];
+    headerCells.forEach((cell, index) => {
+      if (index === 0) return; // 研究室名列はスキップ
+      const text = cell.textContent?.trim() || '';
+      if (text.includes('第1希望')) columnPreferences.push(1);
+      else if (text.includes('第2希望')) columnPreferences.push(2);
+      else if (text.includes('第3希望')) columnPreferences.push(3);
+    });
+
     const rows = Array.from(table.querySelectorAll('tr')).slice(1);
     rows.forEach((row) => {
       const cells = Array.from(row.querySelectorAll('td')).slice(1);
-      cells.forEach((cell) => {
+      cells.forEach((cell, cellIndex) => {
         const entries = extractEntries(cell);
         if (!entries.length) return;
         cell.innerHTML = '';
-        entries.forEach((entry, index) => {
-          const pill = createStudentToken(entry, 'pill', student?.studentId, studentChoices);
+        const preference = columnPreferences[cellIndex] || 1; // デフォルトは第1希望
+        entries.forEach((entry, entryIndex) => {
+          const pill = createStudentToken(entry, 'pill', student?.studentId, studentChoices, preference);
           cell.appendChild(pill);
-          if (index < entries.length - 1) {
+          if (entryIndex < entries.length - 1) {
             cell.appendChild(document.createElement('br'));
           }
         });
@@ -269,15 +287,16 @@ function toggleStudentHighlight(studentId: string, active: boolean) {
 
 function showTooltip(summary: StudentChoiceSummary, event: PointerEvent) {
   const tooltip = ensureTooltip();
-  const first = formatChoiceLine('第1希望', summary.first);
-  const second = formatChoiceLine('第2希望', summary.second);
-  const third = formatChoiceLine('第3希望', summary.third);
+  const first = formatChoiceLine('第1希望', summary.first, summary.confirmed === 1);
+  const second = formatChoiceLine('第2希望', summary.second, summary.confirmed === 2);
+  const third = formatChoiceLine('第3希望', summary.third, summary.confirmed === 3);
   tooltip.innerHTML = `
     <div class="labx-tooltip-name">${summary.name}</div>
     ${summary.program ? `<div class="labx-tooltip-program">${summary.program}</div>` : ''}
     <div class="labx-tooltip-line">${first}</div>
     <div class="labx-tooltip-line">${second}</div>
     <div class="labx-tooltip-line">${third}</div>
+    ${summary.confirmed ? `<div class="labx-tooltip-confirmed">✓ 配属確定 (${summary.confirmed}希望)</div>` : ''}
   `;
   tooltip.style.left = `${event.clientX + 18 + window.scrollX}px`;
   tooltip.style.top = `${event.clientY + 18 + window.scrollY}px`;
@@ -299,8 +318,15 @@ function ensureTooltip(): HTMLDivElement {
   return tooltipEl;
 }
 
-function formatChoiceLine(label: string, labs: string[]): string {
-  return `${label}: ${labs.length ? labs.join(' / ') : '未登録'}`;
+function formatChoiceLine(label: string, labs: string[], isConfirmed: boolean = false): string {
+  if (!labs.length) return `${label}: 未登録`;
+
+  if (isConfirmed && labs.length === 1) {
+    // 配属確定した研究室をハイライト
+    return `${label}: <span class="labx-tooltip-confirmed-lab">${labs[0]} ✓</span>`;
+  }
+
+  return `${label}: ${labs.join(' / ')}`;
 }
 
 function renderHistoryMeta(history: HistoryState): HTMLElement {
@@ -350,6 +376,7 @@ function createStudentToken(
   variant: 'chip' | 'pill',
   currentId: string | undefined,
   studentChoices: Map<string, StudentChoiceSummary>,
+  preference: 1 | 2 | 3
 ): HTMLElement {
   const token = document.createElement('span');
   const { studentId, name, program } = parseStudentEntry(entry);
@@ -358,6 +385,20 @@ function createStudentToken(
     token.dataset.labxStudent = studentId;
   }
   token.className = variant === 'chip' ? 'labx-student-chip' : 'labx-student-pill';
+
+  // 配属確定した学生のトークンを豪華に表示
+  if (studentId && summary?.confirmed === preference) {
+    token.classList.add('labx-student-confirmed-assignment');
+    token.dataset.preference = preference.toString(); // 希望順位をデータ属性に設定
+    token.style.cursor = 'pointer'; // クリック可能であることを示す
+  }
+
+  // 配属確定した学生の他の希望をグレーアウト
+  if (studentId && summary?.confirmed && summary.confirmed !== preference) {
+    token.classList.add('labx-student-confirmed-first-choice');
+    token.style.cursor = 'pointer'; // グレーアウトした学生もクリック可能にする
+  }
+
   if (studentId) {
     const idNode = document.createElement('span');
     idNode.className = 'labx-student-id';
@@ -411,7 +452,7 @@ function statusLabel(status: LabInfo['status']): { emoji: string; text: string }
     case 'almost-full':
       return { emoji: '🟡', text: '残りわずか' };
     case 'over':
-      return { emoji: '🟠', text: '定員超過' };
+      return { emoji: '🟠', text: '満員' };
     default:
       return { emoji: '🔴', text: '危険水準' };
   }
