@@ -389,7 +389,6 @@
   background: linear-gradient(45deg, #f59e0b, #ef4444, #8b5cf6, #3b82f6, #10b981);
   border-radius: 9999px;
   z-index: -1;
-  animation: rainbowBorder 3s linear infinite;
 }
 
 .labx-student-confirmed-assignment::after {
@@ -452,15 +451,6 @@
   }
   100% {
     box-shadow: 0 4px 20px rgba(16, 185, 129, 0.6), 0 0 40px rgba(16, 185, 129, 0.4);
-  }
-}
-
-@keyframes rainbowBorder {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }
 
